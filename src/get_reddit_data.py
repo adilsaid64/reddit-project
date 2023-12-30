@@ -1,13 +1,13 @@
-from logger_config import setup_logger
 import pandas as pd
 import praw
 import json
 
+from .logger_config import setup_logger
 logger = setup_logger()
 
 logger.info('Getting Reddit Credentials')
 
-reddit_cred_file = 'reddit_cred.json'
+reddit_cred_file = 'src/reddit_cred.json'
 with open(reddit_cred_file, 'r') as file:
     reddit_cred = json.load(file)
 
@@ -21,13 +21,13 @@ reddit = praw.Reddit(client_id=client_id,
 
 logger.info('Got Credentials')
 
-def get_post_data(subreddit_name, limit = 100, reddit = reddit):
+def get_post_data(subreddit_name, post_limit = 100, comment_limmit = 100, reddit = reddit):
     logger.info('Getting Reddit Data')
     subreddit = reddit.subreddit(subreddit_name)
-    top_posts = subreddit.top(limit=limit)  
+    top_posts = subreddit.top(limit=post_limit)  
     posts_with_comments = []
     for post in top_posts:
-        post.comments.replace_more(limit=None)
+        post.comments.replace_more(limit=comment_limmit)
         comments = []
         for comment in post.comments.list():
             comment_data = {
