@@ -2,6 +2,7 @@ import re
 import string
 import nltk
 import contractions
+import emoji
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
@@ -22,6 +23,12 @@ def expand_contractions(text):
         "I cannot do this"
     '''
     return contractions.fix(text)
+
+def replace_emoji(text):
+    '''
+    Replace Emoji in text with corresponding text description
+    '''
+    return emoji.demojize(text).replace("_", " ").replace(":", " ")
 
 def lowercase_text(text):
     '''
@@ -61,13 +68,9 @@ def remove_stopwords(text):
     tokens = word_tokenize(text)
     return ' '.join([word for word in tokens if word not in stop_words])
 
-def lemmatize_text(text):
+def lemmatize_text(text): # Needs to use POS tagging
     '''
-    Lemmatize text
-
-    Example:
-    >>> lemmatize_text('change changing changes changed changer')
-    change change change change change
+    Considers the context and conerts the words to its meaningfull base form.
     '''
     lemmatizer = WordNetLemmatizer()
     tokens = word_tokenize(text)
@@ -77,21 +80,23 @@ def clean_text(text):
     '''
     Apply all cleaning functions to text
     '''
-    logger.info('expand_contractions')
+    logger.info(f'expand_contractions: {text}')
     text = expand_contractions(text)
-    logger.info('lowercase_text')
+    logger.info(f'replace_emoji: {text}')
+    replace_emoji(text)
+    logger.info(f'lowercase_text: {text}')
     text = lowercase_text(text)
-    logger.info('remove_special_characters')
+    logger.info(f'remove_special_characters: {text}')
     text = remove_special_characters(text)
-    logger.info('remove_punctuation')
+    logger.info(f'remove_punctuation: {text}')
     text = remove_punctuation(text)
-    logger.info('remove_numbers')
+    logger.info(f'remove_numbers: {text}')
     text = remove_numbers(text)
-    logger.info('remove_whitespace')
+    logger.info(f'remove_whitespace: {text}')
     text = remove_whitespace(text)
-    logger.info('remove_stopwords')
+    logger.info(f'remove_stopwords: {text}')
     text = remove_stopwords(text)
-    logger.info('lemmatize_text')
+    logger.info(f'lemmatize_text: {text}')
     text = lemmatize_text(text)
-    logger.info('Done')
+    logger.info(f'Done: {text}')
     return text
