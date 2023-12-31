@@ -83,7 +83,7 @@ def clean_text(text):
     logger.info(f'expand_contractions: {text}')
     text = expand_contractions(text)
     logger.info(f'replace_emoji: {text}')
-    replace_emoji(text)
+    text = replace_emoji(text)
     logger.info(f'lowercase_text: {text}')
     text = lowercase_text(text)
     logger.info(f'remove_special_characters: {text}')
