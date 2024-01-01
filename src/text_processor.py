@@ -3,14 +3,19 @@ import string
 import nltk
 import contractions
 import emoji
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords, wordnet
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
+import spacy
+
 from .logger_config import setup_logger
 
+nltk.download('averaged_perceptron_tagger')
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
+
+nlp = spacy.load("en_core_web_sm")
 
 logger = setup_logger()
 
@@ -68,13 +73,35 @@ def remove_stopwords(text):
     tokens = word_tokenize(text)
     return ' '.join([word for word in tokens if word not in stop_words])
 
-def lemmatize_text(text): # Needs to use POS tagging
+"""
+def get_wordnet_pos(word):
+    '''Map POS tag to first character lemmatize() accepts'''
+    tag = nltk.pos_tag([word])[0][1][0].upper()
+    tag_dict = {"J": wordnet.ADJ,
+                "N": wordnet.NOUN,
+                "V": wordnet.VERB,
+                "R": wordnet.ADV}
+
+    return tag_dict.get(tag, wordnet.NOUN)
+
+def lemmatize_text(text):
     '''
-    Considers the context and conerts the words to its meaningfull base form.
+    Lemmatize text considering the part-of-speech of each word.
     '''
     lemmatizer = WordNetLemmatizer()
     tokens = word_tokenize(text)
-    return ' '.join([lemmatizer.lemmatize(word) for word in tokens])
+    lemmatized_output = ' '.join([lemmatizer.lemmatize(w, get_wordnet_pos(w)) for w in tokens])
+    return lemmatized_output
+"""
+
+def lemmatize_text_spacy(text):
+    '''
+    Lemmatize text using spaCy, considering the part-of-speech and context of each word.
+    '''
+    doc = nlp(text)    
+    lemmatized_output = ' '.join([token.lemma_ for token in doc])
+
+    return lemmatized_output
 
 def clean_text(text):
     '''
@@ -97,6 +124,6 @@ def clean_text(text):
     logger.info(f'remove_stopwords: {text}')
     text = remove_stopwords(text)
     logger.info(f'lemmatize_text: {text}')
-    text = lemmatize_text(text)
-    logger.info(f'Done: {text}')
-    return text
+    lemmatized_output = lemmatize_text_spacy(text)
+    logger.info(f'Done, Returning lemmatized_output: {lemmatized_output}')
+    return lemmatized_output
