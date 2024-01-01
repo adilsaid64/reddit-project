@@ -1,0 +1,8 @@
+nltk
+contractions
+emoji
+spacy
+transformers
+tensorflow
+torch 
+torchvision
