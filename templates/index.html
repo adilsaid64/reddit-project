@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sentiment Analysis</title>
+</head>
+<body>
+    <form method="post">
+        Subreddit: <input type="text" name="subreddit">
+        <input type="submit" value="Analyze">
+    </form>
+
+    {% if tables %}
+        <h2>Dataframe</h2>
+        {{ tables[0]|safe }}
+
+        <h2>Sentiment Distribution</h2>
+        <img src="data:image/png;base64,{{ sentiment_plot }}" alt="Sentiment Plot">
+
+        <h2>Text Summary</h2>
+        {{ text_summary|safe }}
+
+        <h2>Word Cloud</h2>
+        <img src="data:image/png;base64,{{ wordcloud_url }}" alt="Word Cloud">
+    {% endif %}
+</body>
+</html>

@@ -22,7 +22,7 @@ reddit = praw.Reddit(client_id=client_id,
 logger.info('Got Credentials')
 
 def get_post_data(subreddit_name, post_limit = 100, comment_limmit = 100, reddit = reddit):
-    logger.info('Getting Reddit Data')
+    logger.info(f'Getting Reddit Data: {subreddit_name}')
     subreddit = reddit.subreddit(subreddit_name)
     top_posts = subreddit.top(limit=post_limit)  
     posts_with_comments = []
