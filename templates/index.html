@@ -19,8 +19,12 @@
         <h2>Text Summary</h2>
         {{ text_summary|safe }}
 
-        <h2>Word Cloud</h2>
-        <img src="data:image/png;base64,{{ wordcloud_url }}" alt="Word Cloud">
+        <h2>Positive Word Cloud</h2>
+        <img src="data:image/png;base64,{{ wordcloud_pos_url }}" alt="Pos Word Cloud">
+
+        <h2>Negative Word Cloud</h2>
+        <img src="data:image/png;base64,{{ wordcloud_neg_url }}" alt="Neg Word Cloud">
+
     {% endif %}
 </body>
 </html>

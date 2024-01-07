@@ -24,9 +24,16 @@ def text_summary(df, text_column='cleaned_text'):
 
     return text_summary_stats
 
-
-
-def generate_word_cloud(df, text_column='cleaned_text'):
+def generate_word_cloud_based_on_sentiment(df, text_column='cleaned_text', sentiment_column = 'sentiment_clean_title_label', sentiment = None):
+    if isinstance(sentiment, str):    
+        if sentiment == 'pos':
+            df = df[df[sentiment_column]=='POSITIVE']
+        elif sentiment =='neg':
+            df = df[df[sentiment_column]=='NEGATIVE']
+        else:
+            None
+    else:
+        None
     text = ' '.join(df[text_column].astype(str).tolist())
     wordcloud = WordCloud(background_color='white', width=800, height=400).generate(text)
 
@@ -36,3 +43,12 @@ def generate_word_cloud(df, text_column='cleaned_text'):
     wordcloud_url = base64.b64encode(buf.getvalue()).decode('utf8')
 
     return wordcloud_url
+
+# Need a pipeline to get data in certain order. Current pipeline gets the top posts from each subreddit. Need to be able to get the latest posts.
+# Like get the latest 30 posts. This way we can see how sentiment has changed over time. Or get all posts from last 6 months or something.
+def plot_sentiment_timeseries(df, sentiment_colum = 'sentiment_clean_title_label', time_column = 'created_utc'):
+    return
+
+def plot_word_count(df, text_column):
+    return None
+
