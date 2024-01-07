@@ -6,7 +6,9 @@
 <body>
     <form method="post">
         Subreddit: <input type="text" name="subreddit">
+        Number of Posts: <input type="number" name="no_posts">
         <input type="submit" value="Analyze">
+        
     </form>
 
     {% if tables %}
@@ -24,6 +26,9 @@
 
         <h2>Negative Word Cloud</h2>
         <img src="data:image/png;base64,{{ wordcloud_neg_url }}" alt="Neg Word Cloud">
+
+        <h2>Word Count</h2>
+        <img src="data:image/png;base64,{{ word_count_plot }}" alt="Word Count">
 
     {% endif %}
 </body>
