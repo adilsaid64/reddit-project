@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pandas as pd
 from wordcloud import WordCloud
+from collections import Counter
 import io
 import base64
 
@@ -49,6 +51,26 @@ def generate_word_cloud_based_on_sentiment(df, text_column='cleaned_text', senti
 def plot_sentiment_timeseries(df, sentiment_colum = 'sentiment_clean_title_label', time_column = 'created_utc'):
     return
 
-def plot_word_count(df, text_column):
-    return None
+def plot_word_count(df, text_column, n_words = 15):
+ 
+    df['word_list'] = df[text_column].str.split()
+    results = Counter()
+    df['counter'] = df['word_list'].apply(results.update)
+
+    word_count_data = {'word' : list(results.keys()),
+            'count' : list(results.values())}
+    word_count_df = pd.DataFrame(word_count_data)
+
+    plt.figure(figsize=(10, 6))
+    sns.barplot(data = word_count_df.sort_values(by = 'count', ascending=False)[:n_words], y = 'word', x = 'count')
+    plt.title(f'Top {n_words} Word Count')
+    plt.xlabel('Count')
+    plt.ylabel('Word')
+
+    buf = io.BytesIO()
+    plt.savefig(buf, format = 'png')
+    buf.seek(0)
+    plot_url = base64.b64encode(buf.getvalue()).decode('utf8')
+
+    return plot_url
 

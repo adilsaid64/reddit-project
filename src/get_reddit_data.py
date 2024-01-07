@@ -1,7 +1,9 @@
 import pandas as pd
 import praw
 import json
-
+import boto3
+import io
+import time
 from .logger_config import setup_logger
 logger = setup_logger()
 
@@ -20,6 +22,15 @@ reddit = praw.Reddit(client_id=client_id,
                      user_agent=user_agent)
 
 logger.info('Got Credentials')
+
+
+def stream_to_s3(bucket_name, s3_key_prefix, data):
+    s3_client = boto3.client('s3')
+    s3_key = f"{s3_key_prefix}/{s3_key_prefix}_{int(time.time())}.json"
+    buffer = io.BytesIO()
+    buffer.write(json.dumps(data).encode())
+    buffer.seek(0)
+    s3_client.upload_fileobj(buffer, Bucket=bucket_name, Key=s3_key)
 
 def get_post_data(subreddit_name, post_limit = 100, comment_limmit = 100, reddit = reddit):
     logger.info(f'Getting Reddit Data: {subreddit_name}')
@@ -54,7 +65,10 @@ def get_post_data(subreddit_name, post_limit = 100, comment_limmit = 100, reddit
             'subreddit': str(post.subreddit),
             'comments': comments
         }
-        posts_with_comments.append(post_data)
+        #posts_with_comments.append(post_data)
+
+        stream_to_s3('reddit-project-data', 'subreddit_name', post_data)
+
 
     logger.info('Got Reddit Data')
     
