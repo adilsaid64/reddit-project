@@ -1,7 +1,10 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import pandas as pd
 from src.pipelines import top_posts_subreddit_pipeline
 from src.eda import plot_sentiment_distribution, text_summary, generate_word_cloud_based_on_sentiment, plot_word_count
+from src.logger_config import setup_logger
+
+logger = setup_logger()
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
@@ -21,6 +24,7 @@ def index():
         return render_template('index.html', 
                                tables=[df.to_html(classes='data')],
                                titles=df.columns.values, 
+                               df = df,
                                sentiment_plot=sentiment_plot,
                                text_summary=text_summary_stats,
                                wordcloud_pos_url=wordcloud_pos_url,
@@ -29,6 +33,12 @@ def index():
     else:
         return render_template('index.html')
 
+@app.route('/process-row/<int:index>', methods=['GET', 'POST'])
+def process_row(index):
+    if request.method == 'POST':
+        row_data = request.json
+        logger.info(row_data)
+        return jsonify({"status": "success", "data": row_data})
 
 if __name__ == '__main__':
     app.run(debug=True)

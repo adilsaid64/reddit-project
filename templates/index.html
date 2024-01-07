@@ -1,35 +1,107 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <style>
+        .dataframe-cell {
+            max-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+    
     <title>Sentiment Analysis</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('table#dataframe tr').forEach(row => {
+                row.onclick = function() {
+                    let rowData = {};
+                    const rowIndex = this.dataset.index;
+                    const cells = this.querySelectorAll('td');
+                    cells.forEach((cell, index) => {
+                        rowData['column' + index] = cell.textContent;
+                    });
+                    fetch('/process-row/' + rowIndex, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(rowData)
+                    }).then(response => response.json()).then(data => {
+                        console.log(data);
+                    }).catch(error => console.error('Error:', error));
+                };
+            });
+        });
+    </script>
+    
 </head>
-<body>
-    <form method="post">
-        Subreddit: <input type="text" name="subreddit">
-        Number of Posts: <input type="number" name="no_posts">
-        <input type="submit" value="Analyze">
-        
+<body class="container-fluid">
+    <form method="post" class="mb-4">
+        <div class="form-group">
+            <label for="subreddit">Subreddit:</label>
+            <input type="text" class="form-control" name="subreddit" id="subreddit">
+        </div>
+        <div class="form-group">
+            <label for="no_posts">Number of Posts:</label>
+            <input type="number" class="form-control" name="no_posts" id="no_posts">
+        </div>
+        <button type="submit" class="btn btn-primary">Analyze</button>
     </form>
 
     {% if tables %}
         <h2>Dataframe</h2>
-        {{ tables[0]|safe }}
+        <table id="dataframe" class="table table-striped">
+            <thead>
+                <tr>
+                    {% for col in df.columns %}
+                    <th>{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for index, row in df.iterrows() %}
+                <tr data-index="{{ index }}">
+                    {% for item in row %}
+                    <td class="dataframe-cell" title="{{ item }}">{{ item }}</td> 
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+              
 
-        <h2>Sentiment Distribution</h2>
-        <img src="data:image/png;base64,{{ sentiment_plot }}" alt="Sentiment Plot">
-
-        <h2>Text Summary</h2>
-        {{ text_summary|safe }}
-
-        <h2>Positive Word Cloud</h2>
-        <img src="data:image/png;base64,{{ wordcloud_pos_url }}" alt="Pos Word Cloud">
-
-        <h2>Negative Word Cloud</h2>
-        <img src="data:image/png;base64,{{ wordcloud_neg_url }}" alt="Neg Word Cloud">
-
-        <h2>Word Count</h2>
-        <img src="data:image/png;base64,{{ word_count_plot }}" alt="Word Count">
-
+        <div class="row">
+            <div class="col-md-4">
+                <h2>Sentiment Distribution</h2>
+                <img src="data:image/png;base64,{{ sentiment_plot }}" alt="Sentiment Plot" class="img-fluid">
+            </div>
+            <div class="col-md-4">
+                <h2>Positive Word Cloud</h2>
+                <img src="data:image/png;base64,{{ wordcloud_pos_url }}" alt="Pos Word Cloud" class="img-fluid">
+            </div>
+            <div class="col-md-4">
+                <h2>Negative Word Cloud</h2>
+                <img src="data:image/png;base64,{{ wordcloud_neg_url }}" alt="Neg Word Cloud" class="img-fluid">
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <h2>Text Summary</h2>
+                <div class="text-summary">{{ text_summary|safe }}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Word Count</h2>
+                <img src="data:image/png;base64,{{ word_count_plot }}" alt="Word Count" class="img-fluid">
+            </div>
+        </div>        
+        
     {% endif %}
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>
