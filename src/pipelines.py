@@ -19,9 +19,9 @@ def top_posts_subreddit_pipeline(subreddit_name, post_limit, comment_limmit):
 
     return df
 
-def comments_pipeline(df, index):
+def comments_pipeline(df, comment_column, column_to_clean):
     # Get comment data from the pipeline_subreddit
-    comments_df = pd.DataFrame(df['comments'][index])
-    comments_df['clean_body'] = comments_df['body'].apply(lambda x : clean_text(x))
-    comments_df = get_sentiment(comments_df, 'clean_body') 
+    comments_df = pd.DataFrame(df[comment_column])
+    comments_df[f'clean_{column_to_clean}'] = comments_df[column_to_clean].apply(lambda x : clean_text(x))
+    comments_df = get_sentiment(comments_df, f'clean_{column_to_clean}') 
     return comments_df
