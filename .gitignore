@@ -1,3 +1,6 @@
 src/reddit_cred.json
 src/__pycache__
 project.log
+__pycache__/app.cpython-39.pyc
+__pycache__/app.cpython-311.pyc
+src/aws_cred.json
