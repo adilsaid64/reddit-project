@@ -6,19 +6,26 @@ from collections import Counter
 import io
 import base64
 
+import plotly.express as px
+
+def plot_sentiment_distribution_plotly(df, sentiment_column='sentiment'):
+    sentiment_counts = df[sentiment_column].value_counts()
+    fig = px.bar(sentiment_counts, 
+                 x=sentiment_counts.index, 
+                 y=sentiment_counts.values,
+                 labels={'x': 'Sentiment', 'y': 'Frequency'},
+                 title='Sentiment Distribution')
+    return fig
+
+
 def plot_sentiment_distribution(df, sentiment_column='sentiment'):
     plt.figure(figsize=(10, 6))
     sns.countplot(x=sentiment_column, data=df)
     plt.title('Sentiment Distribution')
     plt.xlabel('Sentiment')
     plt.ylabel('Frequency')
-
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png')
-    buf.seek(0)
-    plot_url = base64.b64encode(buf.getvalue()).decode('utf8')
-
-    return plot_url
+    fig = plt.gcf()
+    return fig
 
 def text_summary(df, text_column='cleaned_text'):
     df['word_count'] = df[text_column].apply(lambda x: len(x.split()))
@@ -51,7 +58,7 @@ def generate_word_cloud_based_on_sentiment(df, text_column='cleaned_text', senti
 def plot_sentiment_timeseries(df, sentiment_colum = 'sentiment_clean_title_label', time_column = 'created_utc'):
     return
 
-def plot_word_count(df, text_column, n_words = 15):
+def plot_word_count_old(df, text_column, n_words = 15):
  
     df['word_list'] = df[text_column].str.split()
     results = Counter()
@@ -67,10 +74,21 @@ def plot_word_count(df, text_column, n_words = 15):
     plt.xlabel('Count')
     plt.ylabel('Word')
 
-    buf = io.BytesIO()
-    plt.savefig(buf, format = 'png')
-    buf.seek(0)
-    plot_url = base64.b64encode(buf.getvalue()).decode('utf8')
+    return
 
-    return plot_url
 
+
+def plot_word_count(df, text_column, n_words=15):
+    all_words = df[text_column].str.split().explode()
+
+    word_counts = all_words.value_counts().head(n_words)
+
+    word_count_df = word_counts.reset_index()
+    word_count_df.columns = ['word', 'count']
+
+    fig = px.bar(word_count_df, x='count', y='word', orientation='h',
+                 title=f'Top {n_words} Word Count',
+                 labels={'count': 'Count', 'word': 'Word'})
+    
+    fig.update_layout(yaxis={'categoryorder':'total ascending'})
+    return fig
