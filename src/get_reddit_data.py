@@ -15,9 +15,7 @@ with open(reddit_cred_file, 'r') as file:
 client_id = reddit_cred['client_id']
 client_secret = reddit_cred['client_secret']
 user_agent = reddit_cred['user_agent']
-reddit = praw.Reddit(client_id=client_id,
-                     client_secret=client_secret,
-                     user_agent=user_agent)
+reddit = praw.Reddit(client_id=client_id, client_secret=client_secret, user_agent=user_agent)
 logger.info('Got Reddit Credentials')
 
 logger.info('Getting AWS Credentials')
@@ -85,10 +83,6 @@ def get_post_data(subreddit_name, post_limit = 100, comment_limmit = 100, reddit
             'comments': comments
         }
         posts_with_comments.append(post_data)
-
         stream_to_s3('reddit-project-data', subreddit_name, post_data)
-
-
     logger.info('Got Reddit Data')
-    
     return posts_with_comments
