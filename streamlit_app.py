@@ -28,22 +28,30 @@ def main():
 
     # GET data only if subreddit name changes or df is empty
     if subreddit_name and (subreddit_name != st.session_state['subreddit_name'] or st.session_state['df'].empty):
-        with st.spinner('Fetching posts...'):
+        with st.spinner(f'Fetching posts for {subreddit_name}...'):
             st.session_state['df'] = top_posts_subreddit_pipeline(subreddit_name=subreddit_name, post_limit=post_limit, comment_limmit=comment_limit)
         st.session_state['subreddit_name'] = subreddit_name
 
     st.write("Subreddit Posts:")
     st.dataframe(st.session_state['df'])
     
-    col1, col2= st.columns(2)
-    with col1:
-        st.header('Sentiment Distribution')
+    if not st.session_state['df'].empty:
+        col1, col2= st.columns(2)
+        with col1:
+            st.header('Sentiment Distribution')
+            st.plotly_chart(plot_sentiment_distribution_plotly(st.session_state['df'], 'sentiment_clean_title_label'))
 
-        st.plotly_chart(plot_sentiment_distribution_plotly(st.session_state['df'], 'sentiment_clean_title_label'))
+            st.header('Possitive Word Cloud')
+            fig = generate_word_cloud_based_on_sentiment(st.session_state['df'], 'clean_title', 'sentiment_clean_title_label', 'pos')
+            st.pyplot(fig)
 
-    with col2:
-        st.header('Word Count')
-        st.plotly_chart(plot_word_count(st.session_state['df'], 'clean_title'))
+        with col2:
+            st.header('Word Count')
+            st.plotly_chart(plot_word_count(st.session_state['df'], 'clean_title'))
+
+            st.header('Negative Word Cloud')
+            fig = generate_word_cloud_based_on_sentiment(st.session_state['df'], 'clean_title', 'sentiment_clean_title_label', 'neg')
+            st.pyplot(fig)
 
     for index, row in st.session_state['df'].iterrows():
         with st.expander(f"Analyze Post: {index} - {row['title']}"):
@@ -54,12 +62,27 @@ def main():
                     logger.info(sentiment.index)
                     comment_df = comments_pipeline(sentiment, 'comments', 'body')
                     st.dataframe(comment_df)
-                    col1, col2= st.columns(2)
-                    with col1:
-                        st.header('Sentiment Distribution')
-        
-                    with col2:
-                        st.header('Word Count')
+
+
+                    if not comment_df.empty:
+                        col1, col2= st.columns(2)
+                        with col1:
+                            st.header('Sentiment Distribution')
+                            st.plotly_chart(plot_sentiment_distribution_plotly(comment_df, 'sentiment_clean_body_label'))
+
+                            st.header('Possitive Word Cloud')
+                            fig = generate_word_cloud_based_on_sentiment(comment_df, 'clean_body', 'sentiment_clean_body_label', 'pos')
+                            st.pyplot(fig)
+
+                        with col2:
+                            st.header('Word Count')
+                            st.plotly_chart(plot_word_count(comment_df, 'clean_body'))
+
+                            st.header('Negative Word Cloud')
+                            fig = generate_word_cloud_based_on_sentiment(comment_df, 'clean_body', 'sentiment_clean_body_label', 'neg')
+                            st.pyplot(fig)
+
+
          
 if __name__ == "__main__":
     main()
