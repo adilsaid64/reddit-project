@@ -1,7 +1,11 @@
 import streamlit as st
 import pandas as pd
-from src.pipelines import top_posts_subreddit_pipeline
+from src.pipelines import top_posts_subreddit_pipeline, comments_pipeline
+from src.logger_config import setup_logger
+from src.eda import plot_sentiment_distribution, plot_word_count, generate_word_cloud_based_on_sentiment
+import base64
 
+logger = setup_logger()
 
 st.set_page_config(layout="wide")
 
@@ -36,7 +40,13 @@ def main():
         if st.button(f"Analyze Post: {index} - {row['title']}", key=row['title']):
             with st.spinner(f"Analyzing post {row['title']}..."):
                 sentiment = analyze_sentiment(st.session_state['df'], row['title'])
-                st.dataframe(sentiment)
+                logger.info(sentiment.index)
+                comment_df = comments_pipeline(sentiment, 'comments', 'body')
+                #logger.info(sentiment)
+                #logger.info(sentiment.columns)
+                
+                #logger.info(pd.DataFrame(sentiment['comments'][0]))
+                st.dataframe(comment_df)
 
 if __name__ == "__main__":
     main()
