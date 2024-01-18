@@ -23,13 +23,14 @@ def main():
 
     with st.sidebar:
         subreddit_name = st.text_input("Enter a subreddit:", st.session_state['subreddit_name'])
+        post_type = st.selectbox("Choose post type", ["Top", "Recent"])
         post_limit = st.number_input("Number of top posts to fetch:", min_value=1, max_value=100, value=5, step=1)
         comment_limit = st.number_input("Limit of comments per post:", min_value=1, max_value=500, value=10, step=1)
 
     # GET data only if subreddit name changes or df is empty
     if subreddit_name and (subreddit_name != st.session_state['subreddit_name'] or st.session_state['df'].empty):
         with st.spinner(f'Fetching posts for {subreddit_name}...'):
-            st.session_state['df'] = top_posts_subreddit_pipeline(subreddit_name=subreddit_name, post_limit=post_limit, comment_limmit=comment_limit)
+            st.session_state['df'] = top_posts_subreddit_pipeline(subreddit_name=subreddit_name, post_limit=post_limit, comment_limmit=comment_limit, posts_to_get = post_type)
         st.session_state['subreddit_name'] = subreddit_name
 
     st.write("Subreddit Posts:")

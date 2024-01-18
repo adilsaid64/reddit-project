@@ -49,12 +49,17 @@ def stream_to_s3(bucket_name, s3_key_prefix, data, session_id_details = session_
     buffer.seek(0)
     s3_client.upload_fileobj(buffer, Bucket=bucket_name, Key=s3_key)
 
-def get_post_data(subreddit_name, post_limit = 100, comment_limmit = 100, reddit = reddit):
+def get_post_data(subreddit_name, post_limit = 100, comment_limmit = 100, reddit = reddit, posts_to_get = 'Top'):
     logger.info(f'Getting Reddit Data: Subreddit: {subreddit_name} --- Number of Posts: {post_limit} --- Comment Limit : {comment_limmit}')
     subreddit = reddit.subreddit(subreddit_name)
-    top_posts = subreddit.top(limit=post_limit)  
+    if posts_to_get =='Top':
+        logger.info('Getting top posts')
+        posts = subreddit.top(limit=post_limit)  
+    elif posts_to_get=='Recent':
+        logger.info('Getting new posts')
+        posts = subreddit.new(limit=post_limit)  
     posts_with_comments = []
-    for post in top_posts:
+    for post in posts:
         post.comments.replace_more(limit=comment_limmit)
         comments = []
         for comment in post.comments.list():
@@ -83,6 +88,6 @@ def get_post_data(subreddit_name, post_limit = 100, comment_limmit = 100, reddit
             'comments': comments
         }
         posts_with_comments.append(post_data)
-        stream_to_s3('reddit-project-data', subreddit_name, post_data)
+        #stream_to_s3('reddit-project-data', subreddit_name, post_data)
     logger.info('Got Reddit Data')
     return posts_with_comments
