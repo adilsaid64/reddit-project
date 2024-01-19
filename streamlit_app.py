@@ -12,6 +12,9 @@ st.set_page_config(layout="wide")
 def analyze_sentiment(df, post_id):
     return df[df['title']==post_id]
 
+@st.cache_data
+def get_data(subreddit_name, post_limit, comment_limit, post_type):
+    return top_posts_subreddit_pipeline(subreddit_name=subreddit_name, post_limit=post_limit, comment_limmit=comment_limit, posts_to_get = post_type)
 
 def main():
     st.title("Reddit Sentiment Analysis")
@@ -26,11 +29,12 @@ def main():
         post_type = st.selectbox("Choose post type", ["Top", "Recent"])
         post_limit = st.number_input("Number of top posts to fetch:", min_value=1, max_value=100, value=5, step=1)
         comment_limit = st.number_input("Limit of comments per post:", min_value=1, max_value=500, value=10, step=1)
+        search_button_clicked = st.button("Enter")
 
     # GET data only if subreddit name changes or df is empty
-    if subreddit_name and (subreddit_name != st.session_state['subreddit_name'] or st.session_state['df'].empty):
+    if search_button_clicked and subreddit_name and (subreddit_name != st.session_state['subreddit_name'] or st.session_state['df'].empty):
         with st.spinner(f'Fetching posts for {subreddit_name}...'):
-            st.session_state['df'] = top_posts_subreddit_pipeline(subreddit_name=subreddit_name, post_limit=post_limit, comment_limmit=comment_limit, posts_to_get = post_type)
+            st.session_state['df'] = get_data(subreddit_name, post_limit, comment_limit, post_type)
         st.session_state['subreddit_name'] = subreddit_name
 
     st.write("Subreddit Posts:")

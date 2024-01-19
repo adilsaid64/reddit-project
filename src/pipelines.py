@@ -11,10 +11,9 @@ def convert_utc(utc_time):
 def top_posts_subreddit_pipeline(subreddit_name, post_limit, comment_limmit, posts_to_get):
     post_data = get_post_data(subreddit_name=subreddit_name, post_limit= post_limit, comment_limmit=comment_limmit, posts_to_get = posts_to_get)
     df = pd.DataFrame(post_data)
-    df['clean_title'] = df['title'].apply(lambda x : clean_text(x))
-    df['clean_selftext'] = df['selftext'].apply(lambda x : clean_text(x))
+    df['all_text'] = df['title'] + df['selftext']
+    df['clean_title'] = df['all_text'].apply(lambda x : clean_text(x))
     df = get_sentiment(df, 'clean_title')
-    df = get_sentiment(df, 'clean_selftext')
     df['timestamp'] = df['created_utc'].apply(convert_utc)
 
     return df
