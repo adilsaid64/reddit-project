@@ -7,6 +7,8 @@ import io
 import base64
 
 import plotly.express as px
+import plotly.graph_objs as go
+
 
 def plot_sentiment_distribution_plotly(df, sentiment_column='sentiment'):
     sentiment_counts = df[sentiment_column].value_counts()
@@ -54,9 +56,25 @@ def generate_word_cloud_based_on_sentiment(df, text_column='cleaned_text', senti
 
 # Need a pipeline to get data in certain order. Current pipeline gets the top posts from each subreddit. Need to be able to get the latest posts.
 # Like get the latest 30 posts. This way we can see how sentiment has changed over time. Or get all posts from last 6 months or something.
-def plot_sentiment_timeseries(df, sentiment_colum = 'sentiment_clean_title_label', time_column = 'created_utc'):
-    return
+def plot_sentiment_timeseries(df, sentiment_colum = 'sentiment_clean_title_label', time_column = 'timestamp'):
+    df['year'] = df[time_column].dt.year
+    df['month'] = df[time_column].dt.month
+    df['day'] = df[time_column].dt.day
 
+    result = df.groupby(['year', 'month', 'day'])[sentiment_colum].value_counts().unstack()
+
+    data = result.reset_index()
+    data['date'] = pd.to_datetime(data[['year', 'month', 'day']])
+
+    # Create traces for positive and negative sentiments
+    trace_positive = go.Scatter(x=data['date'], y=data['POSITIVE'], mode='lines+markers', name='Positive')
+    trace_negative = go.Scatter(x=data['date'], y=data['NEGATIVE'], mode='lines+markers', name='Negative')
+    fig = go.Figure(data=[trace_positive, trace_negative])
+    fig.update_layout(title='Sentiment Analysis Over Time',
+                    xaxis_title='Date',
+                    yaxis_title='Count',
+                    template='plotly_dark')
+    return fig
 
 
 def plot_word_count(df, text_column, n_words=15):

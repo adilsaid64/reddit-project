@@ -32,7 +32,7 @@ def main():
         search_button_clicked = st.button("Enter")
 
     # GET data only if subreddit name changes or df is empty
-    if search_button_clicked and subreddit_name and (subreddit_name != st.session_state['subreddit_name'] or st.session_state['df'].empty):
+    if search_button_clicked: #and subreddit_name and (subreddit_name != st.session_state['subreddit_name'] or st.session_state['df'].empty):
         with st.spinner(f'Fetching posts for {subreddit_name}...'):
             st.session_state['df'] = get_data(subreddit_name, post_limit, comment_limit, post_type)
         st.session_state['subreddit_name'] = subreddit_name
@@ -57,7 +57,11 @@ def main():
             st.header('Negative Word Cloud')
             fig = generate_word_cloud_based_on_sentiment(st.session_state['df'], 'clean_title', 'sentiment_clean_title_label', 'neg')
             st.pyplot(fig)
-
+    
+        with col1:
+            st.header('Sentiment Over Time')
+            st.plotly_chart(plot_sentiment_timeseries(st.session_state['df']))
+            
     for index, row in st.session_state['df'].iterrows():
         with st.expander(f"Analyze Post: {index} - {row['title']}"):
                 
@@ -87,7 +91,8 @@ def main():
                             fig = generate_word_cloud_based_on_sentiment(comment_df, 'clean_body', 'sentiment_clean_body_label', 'neg')
                             st.pyplot(fig)
 
-
-         
+                        with col1:
+                            st.header('Sentiment Over Time')
+                            st.plotly_chart(plot_sentiment_timeseries(comment_df, 'sentiment_clean_body_label'))
 if __name__ == "__main__":
     main()

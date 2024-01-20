@@ -16,6 +16,10 @@ def top_posts_subreddit_pipeline(subreddit_name, post_limit, comment_limmit, pos
     df = get_sentiment(df, 'clean_title')
     df['timestamp'] = df['created_utc'].apply(convert_utc)
 
+    df['year'] = df['timestamp'].dt.year
+    df['month'] = df['timestamp'].dt.month
+    df['day'] = df['timestamp'].dt.day
+
     return df
 
 def comments_pipeline(df, comment_column, column_to_clean):
@@ -25,6 +29,7 @@ def comments_pipeline(df, comment_column, column_to_clean):
         if column_to_clean in comments_df.columns:
             comments_df[f'clean_{column_to_clean}'] = comments_df[column_to_clean].apply(lambda x : clean_text(x))
             comments_df = get_sentiment(comments_df, f'clean_{column_to_clean}') 
+            comments_df['timestamp'] = comments_df['created_utc'].apply(convert_utc)
             return comments_df
         else:
             return comments_df
