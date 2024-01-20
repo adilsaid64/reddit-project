@@ -65,7 +65,7 @@ def main():
     for index, row in st.session_state['df'].iterrows():
         with st.expander(f"Analyze Post: {index} - {row['title']}"):
                 
-            if st.button(f"Analyze", key=row['title']):
+            if st.button(f"Analyze", key=f"{row['title']}+{index}"):
                 with st.spinner(f"Analyzing post {row['title']}..."):
                     sentiment = analyze_sentiment(st.session_state['df'], row['title'])
                     logger.info(sentiment.index)
