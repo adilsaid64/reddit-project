@@ -12,7 +12,7 @@ st.set_page_config(layout="wide")
 def analyze_sentiment(df, post_id):
     return df[df['title']==post_id]
 
-@st.cache_data
+@st.cache_data(show_spinner = False)
 def get_data(subreddit_name, post_limit, comment_limit, post_type):
     return top_posts_subreddit_pipeline(subreddit_name=subreddit_name, post_limit=post_limit, comment_limmit=comment_limit, posts_to_get = post_type)
 
@@ -37,62 +37,67 @@ def main():
             st.session_state['df'] = get_data(subreddit_name, post_limit, comment_limit, post_type)
         st.session_state['subreddit_name'] = subreddit_name
 
-    st.write("Subreddit Posts:")
-    st.dataframe(st.session_state['df'])
-    
-    if not st.session_state['df'].empty:
-        col1, col2= st.columns(2)
-        with col1:
-            st.header('Sentiment Distribution')
-            st.plotly_chart(plot_sentiment_distribution_plotly(st.session_state['df'], 'sentiment_clean_title_label'))
+    st.header(f"Showing posts for: '{subreddit_name}'")
+    tab1, tab2 = st.tabs(['Subreddit Analysis', 'Post Analysis'])
 
-            st.header('Possitive Word Cloud')
-            fig = generate_word_cloud_based_on_sentiment(st.session_state['df'], 'clean_title', 'sentiment_clean_title_label', 'pos')
-            st.pyplot(fig)
+    with tab1:    
+        st.write("Subreddit Posts:")
+        st.dataframe(st.session_state['df'])
+        
+        if not st.session_state['df'].empty:
+            col1, col2= st.columns(2)
+            with col1:
+                st.header('Sentiment Distribution')
+                st.plotly_chart(plot_sentiment_distribution_plotly(st.session_state['df'], 'sentiment_clean_title_label'))
 
-        with col2:
-            st.header('Word Count')
-            st.plotly_chart(plot_word_count(st.session_state['df'], 'clean_title'))
+                st.header('Possitive Word Cloud')
+                fig = generate_word_cloud_based_on_sentiment(st.session_state['df'], 'clean_title', 'sentiment_clean_title_label', 'pos')
+                st.pyplot(fig)
 
-            st.header('Negative Word Cloud')
-            fig = generate_word_cloud_based_on_sentiment(st.session_state['df'], 'clean_title', 'sentiment_clean_title_label', 'neg')
-            st.pyplot(fig)
-    
-        with col1:
-            st.header('Sentiment Over Time')
-            st.plotly_chart(plot_sentiment_timeseries(st.session_state['df']))
-            
-    for index, row in st.session_state['df'].iterrows():
-        with st.expander(f"Analyze Post: {index} - {row['title']}"):
+            with col2:
+                st.header('Word Count')
+                st.plotly_chart(plot_word_count(st.session_state['df'], 'clean_title'))
+
+                st.header('Negative Word Cloud')
+                fig = generate_word_cloud_based_on_sentiment(st.session_state['df'], 'clean_title', 'sentiment_clean_title_label', 'neg')
+                st.pyplot(fig)
+        
+            with col1:
+                st.header('Sentiment Over Time')
+                st.plotly_chart(plot_sentiment_timeseries(st.session_state['df']))
+    with tab2:          
+        for index, row in st.session_state['df'].iterrows():
+            with st.expander(f"Analyze Post: {index} - {row['title']} - {row['sentiment_clean_title_label']}"):
+                    
+                if st.button(f"Analyze", key=f"{row['title']}+{index}"):
+                    with st.spinner(f"Analyzing post {row['title']}..."):
                 
-            if st.button(f"Analyze", key=f"{row['title']}+{index}"):
-                with st.spinner(f"Analyzing post {row['title']}..."):
-                    sentiment = analyze_sentiment(st.session_state['df'], row['title'])
-                    logger.info(sentiment.index)
-                    comment_df = comments_pipeline(sentiment, 'comments', 'body')
-                    st.dataframe(comment_df)
+                        sentiment = analyze_sentiment(st.session_state['df'], row['title'])
+                        logger.info(sentiment.index)
+                        comment_df = comments_pipeline(sentiment, 'comments', 'body')
+                        st.dataframe(comment_df)
 
 
-                    if not comment_df.empty:
-                        col1, col2= st.columns(2)
-                        with col1:
-                            st.header('Sentiment Distribution')
-                            st.plotly_chart(plot_sentiment_distribution_plotly(comment_df, 'sentiment_clean_body_label'))
+                        if not comment_df.empty:
+                            col1, col2= st.columns(2)
+                            with col1:
+                                st.header('Sentiment Distribution')
+                                st.plotly_chart(plot_sentiment_distribution_plotly(comment_df, 'sentiment_clean_body_label'))
 
-                            st.header('Possitive Word Cloud')
-                            fig = generate_word_cloud_based_on_sentiment(comment_df, 'clean_body', 'sentiment_clean_body_label', 'pos')
-                            st.pyplot(fig)
+                                st.header('Possitive Word Cloud')
+                                fig = generate_word_cloud_based_on_sentiment(comment_df, 'clean_body', 'sentiment_clean_body_label', 'pos')
+                                st.pyplot(fig)
 
-                        with col2:
-                            st.header('Word Count')
-                            st.plotly_chart(plot_word_count(comment_df, 'clean_body'))
+                            with col2:
+                                st.header('Word Count')
+                                st.plotly_chart(plot_word_count(comment_df, 'clean_body'))
 
-                            st.header('Negative Word Cloud')
-                            fig = generate_word_cloud_based_on_sentiment(comment_df, 'clean_body', 'sentiment_clean_body_label', 'neg')
-                            st.pyplot(fig)
+                                st.header('Negative Word Cloud')
+                                fig = generate_word_cloud_based_on_sentiment(comment_df, 'clean_body', 'sentiment_clean_body_label', 'neg')
+                                st.pyplot(fig)
 
-                        with col1:
-                            st.header('Sentiment Over Time')
-                            st.plotly_chart(plot_sentiment_timeseries(comment_df, 'sentiment_clean_body_label'))
+                            with col1:
+                                st.header('Sentiment Over Time')
+                                st.plotly_chart(plot_sentiment_timeseries(comment_df, 'sentiment_clean_body_label'))           
 if __name__ == "__main__":
     main()
