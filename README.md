@@ -4,7 +4,10 @@
 
 Allows users to search for a subreddit then produces a sentiment dashboard of of the ovrall subreddit and posts within them. Users can choose a post, and get a sentiment dashboard of that post. Built using streamlit.
 
-# Exmaples
+# Screenshots
+
+![Alt text](ezgif.com-animated-gif-maker.gif)
+
 
 # Text Preprocessing 
 
@@ -16,10 +19,10 @@ This section covers the text preprocesssing steps taken for this project.
 
 - `re`: For regular expression operations.
 - `string`: For string manipulation tasks.
-- `nltk`: The Natural Language Toolkit, used for a range of text processing tasks including tokenization and stopwords removal.
-- `contractions`: To handle the expansion of contractions in English text.
+- `nltk`:  Ued for a  of text processing tasks like tokenization and stopwords removal.
+- `contractions`: Used to handle the expansion of contractions in English text.
 - `emoji`: For converting emojis into text.
-- `spacy`: An advanced library for NLP, used here for lemmatization.
+- `spacy`: Used here for lemmatization.
 
 
 ## 1. Expand Contractions
