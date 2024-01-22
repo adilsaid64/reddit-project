@@ -68,5 +68,9 @@ This section covers the text preprocesssing steps taken for this project.
 - **Purpose**: Converts words to their base or root form, considering the context.
 - **Why**: Provides a more accurate and meaningful representation of words for analysis.
 
+# EDA
+
+
 # Machine Learning Model
 
+# Limitations and Improvements
