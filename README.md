@@ -10,6 +10,37 @@ Allows users to search for a subreddit then produces a sentiment dashboard of of
 
 # Data and Storage
 
+Data is fetched using `praw`.
+
+Post data structure design:
+```python
+comments = []
+comment_data = {
+    'body': comment.body,
+    'author': str(comment.author),
+    'score': comment.score,
+    'created_utc': comment.created_utc,
+    'is_top_level': comment.is_root,
+    'parent_id': comment.parent_id,
+    'depth': comment.depth,
+    'gilded': comment.gilded
+    }
+comments.append(comment_data)
+
+post_data = {
+    'title': post.title,
+    'selftext': post.selftext,
+    'score': post.score,
+    'url': post.url,
+    'author': str(post.author),
+    'created_utc': post.created_utc,
+    'num_comments': post.num_comments,
+    'upvote_ratio': post.upvote_ratio,
+    'subreddit': str(post.subreddit),
+    'comments': comments
+}
+```
+
 # Text Preprocessing 
 
 Text preprocessing is a critical step in NLP (Natural Language Processing). It involves transforming raw text into a more analyzable and uniform format. This process is crucial for improving the performance of machine learning models and to understand the data better.
