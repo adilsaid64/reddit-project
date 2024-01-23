@@ -8,6 +8,7 @@ Allows users to search for a subreddit then produces a sentiment dashboard of of
 
 ![Alt text](ezgif.com-animated-gif-maker.gif)
 
+# Data and Storage
 
 # Text Preprocessing 
 
@@ -69,7 +70,6 @@ This section covers the text preprocesssing steps taken for this project.
 - **Why**: Provides a more accurate and meaningful representation of words for analysis.
 
 # EDA
-
 
 # Machine Learning Model
 
