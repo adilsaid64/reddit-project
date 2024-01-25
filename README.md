@@ -2,13 +2,28 @@
 
 # Project Summary
 
-Allows users to search for a subreddit then produces a sentiment dashboard of of the ovrall subreddit and posts within them. Users can choose a post, and get a sentiment dashboard of that post. Built using streamlit.
+This Reddit Sentiment Analysis Project introduces a powerful tool for real-time sentiment tracking on Reddit. Leveraging Streamlit for a seamless user interface, this project offers an intuitive platform for users to select any subreddit and generate a comprehensive sentiment dashboard. This dashboard not only captures the overall mood of the subreddit but also drills down into individual posts for more granular insights.
+
+## User Experience
+
+Users start by searching for a specific subreddit. The tool then processes recent posts and discussions, utilizing advanced sentiment analysis techniques to gauge the prevailing emotional tone - be it positive or negative. Furthermore, users can select individual posts to explore a detailed sentiment breakdown, enriching their understanding of the community's reactions and opinions.
+
+
+## Applications
+
+1. Event Reaction Analysis: For instance, in the world of sports, fans and analysts can gauge the reaction of a subreddit to events like Manchester United’s match outcomes. This tool helps in understanding the mood swings, trending discussions, and dominant opinions within fan communities.
+
+2. Market Research and Business Intelligence:
+
+3. Social Research and Media Monitoring:
+
+3. Personal Interest and Curiosity:
 
 # Screenshots
 
 ![Alt text](ezgif.com-animated-gif-maker.gif)
 
-# Data and Storage
+# Data Pipeline and Storage
 
 Data is fetched using `praw`.
 
@@ -40,6 +55,8 @@ post_data = {
     'comments': comments
 }
 ```
+
+Data is then stored to an S3 Bucket using boto3 and sorted by subreddit.  
 
 # Text Preprocessing 
 
