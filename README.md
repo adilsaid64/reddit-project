@@ -10,14 +10,16 @@ Users start by searching for a specific subreddit. The tool then processes recen
 
 
 ## Applications
+Sentiment analysis has many applications, here are some:
 
 1. Event Reaction Analysis: For instance, in the world of sports, fans and analysts can gauge the reaction of a subreddit to events like Manchester United’s match outcomes. This tool helps in understanding the mood swings, trending discussions, and dominant opinions within fan communities.
 
-2. Market Research and Business Intelligence:
-
-3. Social Research and Media Monitoring:
+2. Market Research and Business Intelligence: Companies can analyze customer feedback, reviews, and social media conversations to gauge public sentiment towards their products or services. This understanding helps in identifying areas of strength and aspects needing improvement. It allows for real-time monitoring of brand reputation. By analyzing the tone and emotions expressed in online discussions, companies can quickly respond to negative sentiments or capitalize on positive trends.
 
 3. Personal Interest and Curiosity:
+
+## What I have Learned
+Working on this Reddit Sentiment Analysis project has equipped me with an understanding of sentiment analysis techniques and tools. These skills are directly transferable to business contexts, where I can effectively analyze customer feedback and market trends to provide actionable insights that drive strategic decisions and enhance customer engagement.
 
 # Screenshots
 
