@@ -120,7 +120,7 @@ This section covers the text preprocesssing steps taken for this project.
 - **Why**: Provides a more accurate and meaningful representation of words for analysis.
 
 # EDA
-
+- Sentiment Dashboard 
 # Machine Learning Model
 
 # Limitations and Improvements
