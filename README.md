@@ -123,4 +123,7 @@ This section covers the text preprocesssing steps taken for this project.
 - Sentiment Dashboard 
 # Machine Learning Model
 
+# Unit Tests
+- Project includes unit tests.
+
 # Limitations and Improvements
