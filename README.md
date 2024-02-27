@@ -23,7 +23,15 @@ Working on this Reddit Sentiment Analysis project has equipped me with an unders
 
 # Screenshots
 
-![Alt text](ezgif.com-animated-gif-maker.gif)
+![Alt text](<screenshots/Screenshot from 2024-01-21 19-42-15.png>)
+
+![Alt text](<screenshots/Screenshot from 2024-01-21 19-42-24.png>)
+
+![Alt text](<screenshots/Screenshot from 2024-01-21 19-43-16.png>)
+
+![Alt text](<screenshots/Screenshot from 2024-01-21 19-43-41.png>)
+
+![Alt text](<screenshots/Screenshot from 2024-01-21 19-43-52.png>)
 
 # Data Pipeline and Storage
 
