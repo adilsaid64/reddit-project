@@ -131,7 +131,10 @@ This section covers the text preprocesssing steps taken for this project.
 - Sentiment Dashboard 
 # Machine Learning Model
 
+This project useses the  "distilbert-base-uncased-finetuned-sst-2-english" model, a lightweight version of the BERT model, optimized for sentiment analysis tasks. It's based on DistilBERT, which is a smaller, faster alternative to the original BERT, retaining most of its performance with reduced size and computational requirements. This particular model has been fine-tuned on the Stanford Sentiment Treebank (SST-2) dataset for classifying text sentiment as positive or negative. It's ideal for analyzing customer feedback, social media sentiment, and any text-based emotion detection, offering a balance between performance and efficiency.
+
 # Unit Tests
 - Project includes unit tests.
 
 # Limitations and Improvements
+- Sarcasam detection 
