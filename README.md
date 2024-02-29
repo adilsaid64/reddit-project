@@ -137,4 +137,7 @@ This project useses the  "distilbert-base-uncased-finetuned-sst-2-english" model
 - Project includes unit tests.
 
 # Limitations and Improvements
-- Sarcasam detection 
+- Sarcasam detection for more accurate sentiment analysis.
+- Downloading large amounts of data can slow the application down. The pipeline could be made faster.
+- Maybe a cleaner interface.
+- Named-Entity Recognition and Topic Modelling would be intresting features to add.
