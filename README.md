@@ -1,4 +1,4 @@
-# reddit-project
+# Reddit Sentiment Analysis Project
 
 # Project Summary
 
