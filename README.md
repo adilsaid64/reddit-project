@@ -32,7 +32,7 @@ Working on this Reddit Sentiment Analysis project has equipped me with an unders
 ![Alt text](<screenshots/Screenshot from 2024-01-21 19-43-41.png>)
 
 
-# Data Pipeline and Storage
+# Data Pipeline and S3 Storage
 
 Data is fetched using `praw`.
 
