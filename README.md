@@ -31,11 +31,6 @@ Working on this Reddit Sentiment Analysis project has equipped me with an unders
 
 ![Alt text](<screenshots/Screenshot from 2024-01-21 19-43-41.png>)
 
-![Alt text](<screenshots/Screenshot from 2024-01-21 19-43-52.png>)
-
-![Alt text](<Screenshot from 2024-03-02 20-56-38.png>)
-
-![Alt text](<Screenshot from 2024-03-02 21-05-35.png>)
 
 # Data Pipeline and Storage
 
@@ -147,3 +142,11 @@ This project useses the  "distilbert-base-uncased-finetuned-sst-2-english" model
 - Downloading large amounts of data can slow the application down. The pipeline could be made faster.
 - Maybe a cleaner interface.
 - Named-Entity Recognition and Topic Modelling would be intresting features to add.
+
+# More Screenshots
+
+![Alt text](<screenshots/Screenshot from 2024-01-21 19-43-52.png>)
+
+![Alt text](<Screenshot from 2024-03-02 20-56-38.png>)
+
+![Alt text](<Screenshot from 2024-03-02 21-05-35.png>)
