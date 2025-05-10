@@ -150,3 +150,6 @@ This project useses the  "distilbert-base-uncased-finetuned-sst-2-english" model
 ![Alt text](<screenshots/Screenshot from 2024-03-02 20-56-38.png>)
 
 ![Alt text](<screenshots/Screenshot from 2024-03-02 21-05-35.png>)
+
+
+1B7A-C416
