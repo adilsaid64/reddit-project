@@ -18,3 +18,8 @@ dependencies = [
     "torchvision>=0.22.0",
     "transformers>=4.51.3",
 ]
+
+[tool.uv.workspace]
+members = [
+    "data-processor-svc/app",
+]
