@@ -67,7 +67,7 @@ post_data = {
 
 Data is then stored to an S3 Bucket in json format using boto3 and sorted by subreddit.  
 
-![Alt text](<Screenshot from 2024-03-02 21-06-23.png>)
+![Alt text](<screenshots/Screenshot from 2024-03-02 21-06-23.png>)
 
 # Text Preprocessing 
 
@@ -147,6 +147,6 @@ This project useses the  "distilbert-base-uncased-finetuned-sst-2-english" model
 
 ![Alt text](<screenshots/Screenshot from 2024-01-21 19-43-52.png>)
 
-![Alt text](<Screenshot from 2024-03-02 20-56-38.png>)
+![Alt text](<screenshots/Screenshot from 2024-03-02 20-56-38.png>)
 
-![Alt text](<Screenshot from 2024-03-02 21-05-35.png>)
+![Alt text](<screenshots/Screenshot from 2024-03-02 21-05-35.png>)
