@@ -1,3 +1,5 @@
+# refactor into FastAPI endpoint ML service
+
 from transformers import DistilBertTokenizer, TFDistilBertForSequenceClassification
 from transformers import pipeline
 import numpy as np
