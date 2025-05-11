@@ -1,22 +1,11 @@
 """Fetch data endpoint."""
 
 from fastapi import APIRouter
-from typing import Any, Literal
-from pydantic import BaseModel, Field
+from schema.request import FetchDataRequestPayload
+from schema.response import FetchDataResponsePayload
 from src.get_reddit_data import get_post_data
+from src.pipelines import data_cleaning_pipeline
 router = APIRouter()
-
-class FetchDataRequestPayload(BaseModel):
-    """Fetch data request payload"""
-
-    subreddit_name: str = Field(description="Subreddit to fetch")
-    post_limit: int = Field(description="Maximum number of posts")
-    comment_limit: int = Field(description="Max comments per post")
-    posts_to_get: Literal["Top", "Recent"] = Field(description="Get TOp posts from reddit or recent")
-
-class FetchDataResponsePayload(BaseModel):
-    """Fetch data response payload"""
-    data: dict[str, str | int | float | list[dict[str, str | int | float ]]] = Field("Reddit data with comments")
 
 @router.post("/get_data")  # type: ignore
 def get_data(payload: FetchDataRequestPayload):
@@ -29,10 +18,12 @@ def get_data(payload: FetchDataRequestPayload):
         posts_to_get=payload.posts_to_get
     )
 
-    # call reddit post cleaning pipeline
+    processed_data = data_cleaning_pipeline(
+        post_data = reddit_data
+    )
+
     # call comment cleaning pipeline
 
-    # return
-    
+    # call sentiment analysis endpoint here with processeddata
 
     return FetchDataResponsePayload(data = ...)
