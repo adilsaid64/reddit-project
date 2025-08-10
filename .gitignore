@@ -4,3 +4,4 @@ project.log
 src/aws_cred.json
 **/__pycache__/
 todo.txt
+post-producer/.env

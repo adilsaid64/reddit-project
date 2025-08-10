@@ -8,6 +8,7 @@ dependencies = [
     "boto3>=1.38.13",
     "contractions>=0.1.73",
     "emoji>=2.14.1",
+    "fastapi>=0.115.12",
     "nltk>=3.9.1",
     "numpy>=2.2.5",
     "pandas>=2.2.3",
@@ -17,9 +18,11 @@ dependencies = [
     "torch>=2.7.0",
     "torchvision>=0.22.0",
     "transformers>=4.51.3",
+    "uvicorn[standard]>=0.34.2",
 ]
 
 [tool.uv.workspace]
 members = [
     "data-processor-svc/app",
+    "post-producer",
 ]
