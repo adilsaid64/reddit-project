@@ -13,16 +13,11 @@ dependencies = [
     "numpy>=2.2.5",
     "pandas>=2.2.3",
     "praw>=7.8.1",
+    "pre-commit>=4.3.0",
     "spacy>=3.8.5",
     "tensorflow>=2.14.0",
     "torch>=2.7.0",
     "torchvision>=0.22.0",
     "transformers>=4.51.3",
     "uvicorn[standard]>=0.34.2",
-]
-
-[tool.uv.workspace]
-members = [
-    "data-processor-svc/app",
-    "post-producer",
 ]

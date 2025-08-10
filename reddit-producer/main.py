@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 import praw
 import datetime
 import json
@@ -52,7 +51,7 @@ class RabbitMQPublisher:
         self.connection = pika.BlockingConnection(parameters=self.parameters)
         self.channel = self.connection.channel()
     
-    def publish(self, queue_name:str, message: str):
+    def publish(self, queue_name:str, message: str) -> None:
         self.channel.queue_declare(queue=queue_name, durable=True)
         self.channel.basic_publish(exchange='',
                                    routing_key=queue_name,
@@ -63,15 +62,15 @@ class RabbitMQPublisher:
     
 if __name__ == '__main__':
     load_dotenv()
-    reddit_client_id = os.getenv('REDDIT_CLIENT_ID')
-    reddit_client_secret = os.getenv('REDDIT_CLIENT_SECRET')
-    reddit_user_agent = os.getenv('REDDIT_USER_AGENT')
-    subreddit = os.getenv('SUB_REDDIT')
+    reddit_client_id: str = os.getenv('REDDIT_CLIENT_ID')
+    reddit_client_secret: str = os.getenv('REDDIT_CLIENT_SECRET')
+    reddit_user_agent: str = os.getenv('REDDIT_USER_AGENT')
+    subreddit: str = os.getenv('SUB_REDDIT')
 
-    rabbitmq_user = os.getenv('RABBITMQ_USER')
-    rabbitmq_password = os.getenv('RABBITMQ_PASSWORD')
-    rabbitmq_host = os.getenv('RABBITMQ_HOST')
-    rabbitmq_port = int(os.getenv('RABBITMQ_PORT'))
+    rabbitmq_user: str = os.getenv('RABBITMQ_USER')
+    rabbitmq_password: str = os.getenv('RABBITMQ_PASSWORD')
+    rabbitmq_host: str = os.getenv('RABBITMQ_HOST')
+    rabbitmq_port: int = int(os.getenv('RABBITMQ_PORT'))
 
     reddit_fetcher = RedditFetcher(
         reddit_client_id, 
@@ -85,5 +84,4 @@ if __name__ == '__main__':
     )
 
     for post in reddit_fetcher.fetch_data():
-        rabbitmq_publisher.publish(subreddit, json.dumps(asdict(post), indent=2))
-
+        rabbitmq_publisher.publish(subreddit, json.dumps(asdict(post)))
