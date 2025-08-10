@@ -25,4 +25,6 @@ dependencies = [
 [tool.uv.workspace]
 members = [
     "reddit-consumer",
+    "model-server/app",
+    "model-server",
 ]
