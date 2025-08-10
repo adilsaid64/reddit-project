@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from typing import Callable
 
 def callback(ch, method, properties, body):
+    # inference
+    # store in db
     print(f"Received message: {body}")
 
 class RabbitMQConsumer:
