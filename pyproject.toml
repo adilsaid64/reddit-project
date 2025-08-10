@@ -21,3 +21,8 @@ dependencies = [
     "transformers>=4.51.3",
     "uvicorn[standard]>=0.34.2",
 ]
+
+[tool.uv.workspace]
+members = [
+    "reddit-consumer",
+]

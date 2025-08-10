@@ -8,4 +8,4 @@ RUN cd app && uv sync --verbose
 
 EXPOSE 8888
 
-CMD ["uv", "run", "app.py"]
+CMD ["uv", "run", "main.py"]

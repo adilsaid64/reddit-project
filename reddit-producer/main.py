@@ -7,6 +7,7 @@ from typing import Generator
 import logging 
 from dataclasses import dataclass, asdict
 import pika
+import time
 
 logging.basicConfig(
     level=logging.INFO,
@@ -85,3 +86,4 @@ if __name__ == '__main__':
 
     for post in reddit_fetcher.fetch_data():
         rabbitmq_publisher.publish(subreddit, json.dumps(asdict(post)))
+        time.sleep(5)
