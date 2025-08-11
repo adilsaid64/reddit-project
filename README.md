@@ -1,8 +1,14 @@
 # Reddit Sentiment Analysis Project
 
+What's being built:
+
+![alt text](assets/reddit-project.png)
+
+
 # Project Summary
 
 This Reddit Sentiment Analysis Project is a tool for real-time sentiment tracking on Reddit. Leveraging Streamlit for a seamless user interface, this project offers an intuitive platform for users to select any subreddit and generate a comprehensive sentiment dashboard. This dashboard not only captures the overall mood of the subreddit but also drills down into individual posts for more granular insights.
+
 
 ## User Experience
 
