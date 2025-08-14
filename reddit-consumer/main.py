@@ -2,7 +2,9 @@ import os, json, requests, pika
 from dotenv import load_dotenv
 from pymongo import MongoClient
 
-def get_inference(url: str, text: str) -> dict:
+
+
+def get_inference(url: str, text: str) -> dict[str, dict[str, str | int]]:
     resp = requests.post(url, json={"text": text}, timeout=10)
     resp.raise_for_status()
     return resp.json()
@@ -19,8 +21,8 @@ def make_callback(mongo: MongoLogger, ml_url: str):
     def callback(ch, method, properties, body: bytes):
         try:
             data = json.loads(body.decode("utf-8"))
-            data["title_sentiment"] = get_inference(ml_url, data.get("title", "") or "")
-            data["selftext_sentiment"] = get_inference(ml_url, data.get("selftext", "") or "")
+            data["title_sentiment"] = get_inference(ml_url, data.get("title", ""))['inference']
+            data["selftext_sentiment"] = get_inference(ml_url, data.get("selftext", ""))['inference']
 
             mongo.log(data)
             ch.basic_ack(delivery_tag=method.delivery_tag)
