@@ -12,4 +12,5 @@ dependencies = [
     "torch>=2.7.0",
     "transformers>=4.51.3",
     "uvicorn>=0.34.2",
+    "vadersentiment>=3.3.2",
 ]
