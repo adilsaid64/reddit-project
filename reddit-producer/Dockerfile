@@ -2,10 +2,8 @@ FROM ghcr.io/astral-sh/uv:debian-slim
 
 WORKDIR /app
 
-COPY . /app
+COPY . .
 
-RUN cd app && uv sync --verbose
-
-EXPOSE 8888
+RUN uv sync --verbose
 
 CMD ["uv", "run", "main.py"]

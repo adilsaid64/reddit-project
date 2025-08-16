@@ -16,7 +16,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
   mongo:
     image: mongo
     ports:
@@ -34,6 +33,19 @@ services:
       ME_CONFIG_BASICAUTH: false
     depends_on:
       - mongo
+  reddit-producer:
+    build: ./reddit-producer
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+  model-server:
+    build: ./model-server
+  reddit-consumer:
+    build: ./reddit-consumer
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
 
 volumes:
   rabbitmq_data:
