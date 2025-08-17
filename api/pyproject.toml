@@ -1,0 +1,13 @@
+[project]
+name = "sentiment-dashboard-api"
+version = "0.1.0"
+description = "API for real-time sentiment dashboard data"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.12",
+    "uvicorn[standard]>=0.34.2",
+    "pymongo>=4.14.0",
+    "pydantic>=2.11.4",
+    "prometheus-client>=0.22.1",
+]

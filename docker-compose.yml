@@ -40,12 +40,31 @@ services:
         condition: service_healthy
   model-server:
     build: ./model-server
+    ports:
+      - "8001:8001"
   reddit-consumer:
     build: ./reddit-consumer
     depends_on:
       rabbitmq:
         condition: service_healthy
-
+  sentiment-dashboard-api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongo
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017
+    restart: unless-stopped
+  streamlit-dashboard:
+    build: ./streamlit-app
+    ports:
+      - "8501:8501"
+    depends_on:
+      - sentiment-dashboard-api
+    environment:
+      - API_BASE_URL=http://sentiment-dashboard-api:8000
+    restart: unless-stopped
 
 volumes:
   rabbitmq_data:

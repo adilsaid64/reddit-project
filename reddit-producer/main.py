@@ -81,7 +81,6 @@ class MockRedditFetcher:
                 now_time=datetime.datetime.now().timestamp(),
             )
             i += 1
-            time.sleep(0.5)
 
 class RabbitMQPublisher:
     def __init__(self, username: str, password:str, port: int, host: str):
@@ -112,7 +111,7 @@ if __name__ == '__main__':
     rabbitmq_port: int = int(os.getenv('RABBITMQ_PORT'))
     simulation_mode: bool = os.getenv('SIMULATION_MODE')
 
-    if simulation_mode:
+    if simulation_mode==True:
         reddit_fetcher = MockRedditFetcher(
             reddit_client_id, 
             reddit_client_secret, 
@@ -134,4 +133,5 @@ if __name__ == '__main__':
 
     for post in reddit_fetcher.fetch_data():
         rabbitmq_publisher.publish(subreddit, json.dumps(asdict(post)))
-        time.sleep(5)
+        logging.info(json.dumps(asdict(post)))
+        # time.sleep(5)

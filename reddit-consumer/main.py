@@ -21,6 +21,8 @@ def make_callback(mongo: MongoLogger, ml_url: str):
     def callback(ch, method, properties, body: bytes):
         try:
             data = json.loads(body.decode("utf-8"))
+            # Add subreddit from queue name
+            data["subreddit"] = method.routing_key
             data["title_sentiment"] = get_inference(ml_url, data.get("title", ""))['inference']
             data["selftext_sentiment"] = get_inference(ml_url, data.get("selftext", ""))['inference']
 
