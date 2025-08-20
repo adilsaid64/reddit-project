@@ -143,11 +143,11 @@ def create_sentiment_timeline(posts: list) -> go.Figure:
         df = pd.DataFrame(timeline_data)
         
         if len(df) > 100:
-            df["time_bucket"] = df["timestamp"].dt.floor("30S")
+            df["time_bucket"] = df["timestamp"].dt.floor("10S")
         elif len(df) > 50:
-            df["time_bucket"] = df["timestamp"].dt.floor("1T")
+            df["time_bucket"] = df["timestamp"].dt.floor("10s")
         else:
-            df["time_bucket"] = df["timestamp"].dt.floor("5T")
+            df["time_bucket"] = df["timestamp"].dt.floor("10s")
         
         time_sentiment = df.groupby(["time_bucket", "sentiment"]).size().reset_index(name="count")
         pivot_data = time_sentiment.pivot(index="time_bucket", columns="sentiment", values="count").fillna(0)
@@ -236,11 +236,11 @@ def create_cumulative_sentiment_timeline(posts: list) -> go.Figure:
         df = df.sort_values("timestamp")
         
         if len(df) > 100:
-            df["time_bucket"] = df["timestamp"].dt.floor("30S")
+            df["time_bucket"] = df["timestamp"].dt.floor("10S")
         elif len(df) > 50:
-            df["time_bucket"] = df["timestamp"].dt.floor("1T")
+            df["time_bucket"] = df["timestamp"].dt.floor("10s")
         else:
-            df["time_bucket"] = df["timestamp"].dt.floor("5T")
+            df["time_bucket"] = df["timestamp"].dt.floor("10s")
         
         time_sentiment = df.groupby(["time_bucket", "sentiment"]).size().reset_index(name="count")
         pivot_data = time_sentiment.pivot(index="time_bucket", columns="sentiment", values="count").fillna(0)
@@ -404,84 +404,55 @@ def main():
             st.write("Sentiment Summary:", st.session_state.sentiment_summary)
             st.write("Timeline Data Available:", st.session_state.timeline_data is not None)
             st.write("Cumulative Data Available:", st.session_state.cumulative_data is not None)
+        
+    st.header("📈 Real-time Sentiment Data")
     
-    col1, col2 = st.columns([2, 1])
+    if (st.session_state.auto_refresh and 
+        (st.session_state.last_poll is None or 
+            datetime.now() - st.session_state.last_poll > timedelta(seconds=POLLING_INTERVAL))):
+        
+        with st.spinner("Fetching latest data..."):
+            data = fetch_api_data("/recent-data", {"hours": time_range})
+            if data:
+                st.session_state.data = data
+                st.session_state.last_poll = datetime.now()
+                st.session_state.error = None
     
-    with col1:
-        st.header("📈 Real-time Sentiment Data")
+    if st.session_state.data:
+        data = st.session_state.data
         
-        if (st.session_state.auto_refresh and 
-            (st.session_state.last_poll is None or 
-             datetime.now() - st.session_state.last_poll > timedelta(seconds=POLLING_INTERVAL))):
-            
-            with st.spinner("Fetching latest data..."):
-                data = fetch_api_data("/recent-data", {"hours": time_range})
-                if data:
-                    st.session_state.data = data
-                    st.session_state.last_poll = datetime.now()
-                    st.session_state.error = None
+        # Store sentiment summary in session state
+        sentiment_summary = data.get("sentiment_summary", {})
+        st.session_state.sentiment_summary = sentiment_summary
         
-        if st.session_state.data:
-            data = st.session_state.data
-            
-            # Store sentiment summary in session state
-            sentiment_summary = data.get("sentiment_summary", {})
-            st.session_state.sentiment_summary = sentiment_summary
-            
-            col1_1, col1_2, col1_3, col1_4 = st.columns(4)
-            with col1_1:
-                st.metric("Total Posts", data.get("total_count", 0))
-            with col1_2:
-                st.metric("Positive", sentiment_summary.get("positive", 0))
-            with col1_3:
-                st.metric("Negative", sentiment_summary.get("negative", 0))
-            with col1_4:
-                st.metric("Neutral", sentiment_summary.get("neutral", 0))
-            
-            st.subheader("Sentiment Distribution")
-            fig = create_sentiment_bar_chart(sentiment_summary)
-            st.plotly_chart(fig, use_container_width=True)
-            
-            st.subheader("Sentiment Timeline")
-            fig = create_sentiment_timeline(data.get("posts", []))
-            st.plotly_chart(fig, use_container_width=True)
-            
-            st.subheader("Cumulative Sentiment Trends")
-            fig_cumulative = create_cumulative_sentiment_timeline(data.get("posts", []))
-            st.plotly_chart(fig_cumulative, use_container_width=True)
-            
-            st.subheader("Recent Posts")
-            posts_df = display_posts_table(data.get("posts", []))
-            st.session_state.posts_df = posts_df
-            
-        else:
-            st.info("No data available. Check API connection and try refreshing.")
-    
-    with col2:
-        st.header("🏷️ Subreddit Breakdown")
+        col1_1, col1_2, col1_3, col1_4 = st.columns(4)
+        with col1_1:
+            st.metric("Total Posts", data.get("total_count", 0))
+        with col1_2:
+            st.metric("Positive", sentiment_summary.get("positive", 0))
+        with col1_3:
+            st.metric("Negative", sentiment_summary.get("negative", 0))
+        with col1_4:
+            st.metric("Neutral", sentiment_summary.get("neutral", 0))
         
-        if (st.session_state.subreddit_stats is None or 
-            st.session_state.data is None):
-            subreddit_data = fetch_api_data("/subreddit-stats", {"hours": time_range})
-            if subreddit_data:
-                st.session_state.subreddit_stats = subreddit_data
-        else:
-            subreddit_data = st.session_state.subreddit_stats
+        st.subheader("Sentiment Distribution")
+        fig = create_sentiment_bar_chart(sentiment_summary)
+        st.plotly_chart(fig, use_container_width=True)
         
-        if subreddit_data:
-            fig = create_subreddit_bar_chart(subreddit_data.get("subreddits", []))
-            st.plotly_chart(fig, use_container_width=True)
-            
-            for subreddit in subreddit_data.get("subreddits", [])[:5]:
-                with st.expander(f"r/{subreddit['subreddit']} - {subreddit['post_count']} posts"):
-                    sentiment_dist = subreddit.get("sentiment_distribution", {})
-                    col1, col2, col3 = st.columns(3)
-                    with col1:
-                        st.metric("Positive", sentiment_dist.get("positive", 0))
-                    with col2:
-                        st.metric("Negative", sentiment_dist.get("negative", 0))
-                    with col3:
-                        st.metric("Neutral", sentiment_dist.get("neutral", 0))
+        st.subheader("Sentiment Timeline")
+        fig = create_sentiment_timeline(data.get("posts", []))
+        st.plotly_chart(fig, use_container_width=True)
+        
+        st.subheader("Cumulative Sentiment Trends")
+        fig_cumulative = create_cumulative_sentiment_timeline(data.get("posts", []))
+        st.plotly_chart(fig_cumulative, use_container_width=True)
+        
+        st.subheader("Recent Posts")
+        posts_df = display_posts_table(data.get("posts", []))
+        st.session_state.posts_df = posts_df
+        
+    else:
+        st.info("No data available. Check API connection and try refreshing.")
     
     st.markdown("---")
     st.markdown(

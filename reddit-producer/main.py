@@ -134,4 +134,4 @@ if __name__ == '__main__':
     for post in reddit_fetcher.fetch_data():
         rabbitmq_publisher.publish(subreddit, json.dumps(asdict(post)))
         logging.info(json.dumps(asdict(post)))
-        # time.sleep(5)
+        time.sleep(2)
